@@ -8,7 +8,7 @@ file_head = '''
 <head>
 <meta charset="utf-8">
 <style type="text/css">
-a {color:blue; text-indet:20%;}
+a {color:red; text-indet:20%;}
 </style>
 </head>
 <body>
@@ -69,4 +69,3 @@ if __name__=="__main__":
     file = file_head + file_body + file_tail
     with open(main_name+'.html', encoding='utf-8', mode='w') as f:
         f.write(file)
-    input("生成完成，按回车键结束")
