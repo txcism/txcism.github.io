@@ -8,7 +8,7 @@ file_head = '''
 <head>
 <meta charset="utf-8">
 <style type="text/css">
-a {color:red; text-indet:20%;}
+a {color:red; font-size:60px;}
 </style>
 </head>
 <body>
