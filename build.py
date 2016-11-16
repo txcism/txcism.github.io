@@ -1,3 +1,6 @@
+#生成主页面
+#待解决：根据文件创建时间来排序
+#
 import os
 
 main_name = 'index'
@@ -56,14 +59,14 @@ def create_element(path, name):
         file_type = splits[-1]
         file_name = splits[-2]
         if file_type == 'html' and file_name != main_name:
-            return '<div class="entry"><a href="' + path + '">' + file_name + '</a></div>'
+            return '<div class="entry"><a href="' + path + '">' + file_name + '</a></div>\n'
     return ''
 
 #
 def create_body(paths):
     body = ''
     for k, v in paths.items():
-        body += create_element(k, v) + '\n'
+        body += create_element(k, v) 
         print(k, v)
     return body
 
