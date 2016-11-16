@@ -54,7 +54,7 @@ def create_element(path, name):
 def create_body(paths):
     body = ''
     for k, v in paths.items():
-        body += create_element(k, v)
+        body += create_element(k, v) + '\n'
         print(k, v)
     return body
 
