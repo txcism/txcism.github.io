@@ -59,7 +59,7 @@ def create_element(path, name):
         file_type = splits[-1]
         file_name = splits[-2]
         if file_type == 'html' and file_name != main_name:
-            return '<div class="entry"><a href="' + path + '">' + file_name + '</a></div>\n'
+            return '<div class="entry"><a href="'+path+'">'+file_name+'</a></div>\n'
     return ''
 
 #
