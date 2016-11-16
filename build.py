@@ -8,10 +8,16 @@ file_head = '''
 <head>
 <meta charset="utf-8">
 <style type="text/css">
-a {color:red; font-size:60px;}
+p {font-size:24px; text-indent:120px;}
+div {font-size:20px; text-indent:240px}
+a:link {text-decoration:none;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:underline;}
+a:active {text-decoration:underline;}
 </style>
 </head>
 <body>
+<p>Just some Notes</p>
 '''
 file_body = ''
 file_tail = '''
@@ -50,7 +56,7 @@ def create_element(path, name):
         file_type = splits[-1]
         file_name = splits[-2]
         if file_type == 'html' and file_name != main_name:
-            return '<p class="entry"><a href="' + path + '">' + file_name + '</a></p>'
+            return '<div class="entry"><a href="' + path + '">' + file_name + '</a></div>'
     return ''
 
 #
