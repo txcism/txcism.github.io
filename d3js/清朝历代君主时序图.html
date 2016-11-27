@@ -1,0 +1,180 @@
+<html>
+  <head>
+    <meta charset = "utf-8">
+    <title>a simple chart</title>
+    <style>
+
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+</style>
+  </head>
+  <body>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
+    <script>
+
+    //var width = 1200;
+    //var height = 600;
+    var outer = {width: 1200, height: 600}
+    var inner = {width: 0, height: 0}
+    var margin = {top: 20, right: 40, bottom: 20, left: 40}
+    inner.width = outer.width - margin.left - margin.right
+    inner.height = outer.height - margin.top - margin.bottom
+    
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", outer.width)
+      .attr("height", outer.height)
+      .append("g")
+      .attr("transform","translate(" + margin.left + "," + margin.top + ")")
+    //"g" means group
+    //transform 变换
+    //translate 平移
+    var dataset = [
+      {start:1559, end:1626, up:1616, down:1626, name:"努尔哈赤"},
+      {start:1592, end:1643, up:1626, down:1643, name:"皇太极"}, 
+      {start:1638, end:1661, up:1643, down:1661, name:"福临"},
+      {start:1654, end:1722, up:1661, down:1722, name:"玄烨"},
+      {start:1678, end:1735, up:1722, down:1735, name:"胤禛"},
+      {start:1711, end:1799, up:1735, down:1796, name:"弘历"},
+      {start:1760, end:1820, up:1796, down:1820, name:"颙琰"},
+      {start:1782, end:1850, up:1820, down:1850, name:"旻宁"},
+      {start:1831, end:1861, up:1850, down:1861, name:"奕詝"},
+      {start:1856, end:1875, up:1861, down:1875, name:"载淳"},
+      {start:1871, end:1908, up:1875, down:1908, name:"载湉"},
+      {start:1906, end:1967, up:1908, down:1912, name:"溥仪"}];
+    //var min = d3.min(dataset)
+    //var max = d3.max(dataset)
+    //scaler
+    var linear = d3.scale.linear()
+      .domain([1550, 1970])
+      .range([0, inner.width])
+    //axis
+    var axis = d3.svg.axis()
+      .scale(linear)
+      .orient("top")
+      .ticks(4)
+      .tickFormat(d3.format())
+
+    var bar_height = 25;
+    //start_end bar
+    svg.selectAll(".start_end")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .attr("class", "start_end")
+      .attr("left", function(d){
+        return d.start
+      })
+      .attr("right", function(d){
+        return d.end
+      })
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .attr("x", function(d){
+        return linear(d.start)
+      })
+      .attr("y", function(d, i){
+        return (i+1)*bar_height;
+      })
+      .attr("width", function(d){
+        return linear(d.end) - linear(d.start);
+      })
+      .attr("height", bar_height - 2)
+      .attr("fill", "#bd9e39")
+      .on("mouseover", on_mouseover)
+      .on("mouseout", on_mouseout)
+    //up_down bar
+    svg.selectAll(".up_down")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .attr("class", "up_down")
+      .attr("left", function(d){
+        return d.up
+      })
+      .attr("right", function(d){
+        return d.down
+      })
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .attr("x", function(d){
+        return linear(d.up)
+      })
+      .attr("y", function(d, i){
+        return (i+1)*bar_height;
+      })
+      .attr("width", function(d){
+        return linear(d.down) - linear(d.up);
+      })
+      .attr("height", bar_height - 2)
+      .attr("fill", "#8c6d31")
+      .on("mouseover", on_mouseover)
+      .on("mouseout", on_mouseout)
+    //text
+    svg.selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("fill", "white")
+      .attr("x", function(d){
+        return linear((d.start + d.end) / 2);
+      })
+      .attr("y", function(d, i){
+        return (i+1)*bar_height;
+      })
+      .attr("dy", bar_height - 2 - 4)
+      .attr("text-anchor", "middle")
+      .text(function(d){
+        return d.name
+      })
+      .attr("pointer-events", "none")
+
+    //dynamic show
+    svg.append("rect")
+      .attr("id", "left_bar")
+      .attr("height", 6)
+      .attr("width", 1)
+    svg.append("rect")
+      .attr("id", "right_bar")
+      .attr("height", 6)
+      .attr("width", 1)
+    svg.append("text")
+      .attr("id", "left_text")
+      .attr("y", 20)
+      .attr("dx", -2)
+      .attr("text-anchor", "end")
+    svg.append("text")
+      .attr("id", "right_text")
+      .attr("y", 20)
+      .attr("dx", 2)
+      .attr("text-anchor", "start")
+
+    function on_mouseover(){
+      d3.select(this).attr("stroke", "black")
+      d3.select("#left_bar")
+        .attr("x", d3.select(this).attr("x"))
+      d3.select("#right_bar")
+        .attr("x", parseFloat(d3.select(this).attr("x")) + parseFloat(d3.select(this).attr("width")))
+      d3.select("#left_text")
+        .attr("x", d3.select(this).attr("x"))
+        .text(d3.select(this).attr("left"))
+      d3.select("#right_text")
+        .attr("x", parseFloat(d3.select(this).attr("x")) + parseFloat(d3.select(this).attr("width")))
+        .text(d3.select(this).attr("right"))
+    }
+    function on_mouseout(){
+      d3.select(this).attr("stroke", "none")
+    }
+
+    svg.append("g")
+      .attr("class", "axis")
+      .call(axis)
+    </script>
+  </body>
+ <html>

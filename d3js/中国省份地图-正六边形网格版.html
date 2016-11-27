@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Example</title>
+  </head>
+  <body>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
+    <script>
+    var high = d3.rgb(0, 0, 255)
+    var low = d3.rgb(0, 255, 255)
+    var color = d3.interpolate(low, high)
+    var scaler = d3.scale.linear()
+      .domain([0, 100])
+      .range([0, 1])
+    var margin = {top: 40, rigth: 40, bottom: 40, left: 40}
+    var outer = {width: 600, height: 600}
+    var num_rows = 10
+    var num_cols = 10
+    var radius = 25
+    var data = [
+        {name: "黑", row: 0, col: 6, value: 21},
+        {name: "吉", row: 1, col: 5, value: 33},
+        {name: "蒙", row: 2, col: 4, value: 22},
+        {name: "辽", row: 2, col: 5, value: 38},
+        {name: "新", row: 3, col: 1, value: 2},
+        {name: "宁", row: 3, col: 2, value: 82},
+        {name: "晋", row: 3, col: 3, value: 52},
+        {name: "冀", row: 3, col: 4, value: 19},
+        {name: "京", row: 3, col: 5, value: 14},
+        {name: "津", row: 3, col: 6, value: 45},
+        {name: "青", row: 4, col: 1, value: 75},
+        {name: "甘", row: 4, col: 2, value: 53},
+        {name: "陕", row: 4, col: 3, value: 66},
+        {name: "豫", row: 4, col: 4, value: 43},
+        {name: "鲁", row: 4, col: 5, value: 34},
+        {name: "藏", row: 5, col: 0, value: 80},
+        {name: "川", row: 5, col: 1, value: 77},
+        {name: "渝", row: 5, col: 2, value: 71},
+        {name: "鄂", row: 5, col: 3, value: 37},
+        {name: "皖", row: 5, col: 4, value: 85},
+        {name: "苏", row: 5, col: 5, value: 11},
+        {name: "云", row: 6, col: 1, value: 27},
+        {name: "贵", row: 6, col: 2, value: 35},
+        {name: "湘", row: 6, col: 3, value: 67},
+        {name: "赣", row: 6, col: 4, value: 38},
+        {name: "浙", row: 6, col: 5, value: 54},
+        {name: "沪", row: 6, col: 6, value: 45},
+        {name: "桂", row: 7, col: 2, value: 24},
+        {name: "粤", row: 7, col: 3, value: 43},
+        {name: "闽", row: 7, col: 4, value: 42},
+        {name: "澳", row: 8, col: 3, value: 41},
+        {name: "港", row: 8, col: 4, value: 29},
+        {name: "台", row: 8, col: 6, value: 92},
+        {name: "琼", row: 10, col: 3, value: 8}
+    ]
+
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", outer.width)
+      .attr("height", outer.height)
+
+    var g = svg.append("g")
+      .attr("transform","translate(" + margin.left + "," + margin.top + ")")
+        
+    g.selectAll("path")
+      .data(data)
+      .enter()
+      .append("path")
+      .attr("d", hexagon(radius))
+      .attr("transform", function(d){
+        return "translate(" + center([d.row, d.col], radius).x + "," + center([d.row, d.col], radius).y + ")"
+      })
+      .attr("stroke", "white")
+      .attr("stroke-width", 1)
+      .attr("fill", function(d) {return color(scaler(d.value))})
+      .on("mouseover", on_mouseover)
+      .on("mouseout", on_mouseout)
+
+    g.selectAll("text")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", function(d) {return center([d.row, d.col], radius).x})
+      .attr("y", function(d) {return center([d.row, d.col], radius).y})
+      .attr("fill", "white")
+      .attr("pointer-events", "none")
+      .text(function(d) {return d.name})
+    
+    function on_mouseover(){
+        d3.select(this).attr("stroke-width", 2)
+    }
+    function on_mouseout(){
+        d3.select(this).attr("stroke-width", 1)
+    }
+
+    function center(point, radius){
+        var x = 0
+        var y = 3 / 2 * radius * point[0]
+        if(point[0] % 2 == 0){
+            x = radius * Math.sqrt(3) * point[1] 
+            }else{
+                x = radius * Math.sqrt(3) / 2 + radius * Math.sqrt(3) * point[1]
+            }
+        return {"x": x, "y": y}
+    }
+
+    function hexagon(radius){
+      var path = ""
+      var cmd = ""
+      var dx = 0
+      var dy = 0
+      var angle = 0
+      for(var i = 0; i < 6; i++){
+        if(i == 0){
+          cmd = "M"
+        }else{
+          cmd = "L"
+        }
+        angle = Math.PI / 6 + Math.PI / 3 * i
+        dx = radius * Math.cos(angle)
+        dy = - radius * Math.sin(angle)
+        path = path + cmd + dx + "," + dy
+      }
+      path = path + "Z"
+      return path
+    }
+    </script>
+  </body>
+</html>
